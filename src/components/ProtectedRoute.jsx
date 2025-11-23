@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { GlobalContext } from "../GlobalContext";
+import { getUserNameFromCookie } from "../utilities/cookie.utility";
 
 export default function ProtectedRoute({
     children,
@@ -23,6 +24,14 @@ export default function ProtectedRoute({
                     if (data.success) {
                         console.log(data.user);
                         dispatch({ type: "SET_USER", payload: data.user });
+                        // Also set userName from cookie after successful auth check
+                        const userName = getUserNameFromCookie();
+                        if (userName) {
+                            console.log("Setting userName from cookie:", userName);
+                            dispatch({ type: "SET_USER_NAME", payload: userName });
+                        } else {
+                            console.log("No userName cookie found");
+                        }
                     } else {
                         console.log(data.message);
                         dispatch({ type: "REMOVE_USER" });

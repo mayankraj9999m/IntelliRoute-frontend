@@ -5,12 +5,16 @@
  */
 export const getCookie = (name) => {
     const value = `; ${document.cookie}`;
+    console.log("All cookies:", document.cookie); // Debug log
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) {
         const cookieValue = parts.pop().split(';').shift();
         // Decode URL-encoded cookie value
-        return decodeURIComponent(cookieValue);
+        const decoded = decodeURIComponent(cookieValue);
+        console.log(`Cookie ${name} found:`, decoded); // Debug log
+        return decoded;
     }
+    console.log(`Cookie ${name} not found`); // Debug log
     return null;
 };
 

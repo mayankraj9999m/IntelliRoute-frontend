@@ -19,9 +19,32 @@ export const getCookie = (name) => {
 };
 
 /**
- * Get the userName from cookie
+ * Get the userName from cookie (for same-domain) or localStorage (for cross-domain)
  * @returns {string|null} - The user name or null if not found
  */
 export const getUserNameFromCookie = () => {
-    return getCookie('userName');
+    // Try cookie first (works locally)
+    const cookieName = getCookie('userName');
+    if (cookieName) return cookieName;
+    
+    // Fallback to localStorage (works on deployed static site)
+    return localStorage.getItem('userName');
+};
+
+/**
+ * Set userName in localStorage for cross-domain compatibility
+ * @param {string} userName - The user name to store
+ */
+export const setUserNameInStorage = (userName) => {
+    if (userName) {
+        localStorage.setItem('userName', userName);
+        console.log('Saved userName to localStorage:', userName);
+    }
+};
+
+/**
+ * Clear userName from localStorage
+ */
+export const clearUserNameFromStorage = () => {
+    localStorage.removeItem('userName');
 };

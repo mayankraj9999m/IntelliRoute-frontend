@@ -3,7 +3,7 @@ import styles from "./Auth.module.css";
 import { GlobalContext } from "../GlobalContext";
 import Popup from "../components/PopUp";
 import { AutoRedirect } from "../components/AutoRedirect";
-import { getUserNameFromCookie } from "../utilities/cookie.utility";
+import { getUserNameFromCookie, setUserNameInStorage } from "../utilities/cookie.utility";
 
 const Login = () => {
     const { state, dispatch } = useContext(GlobalContext);
@@ -174,6 +174,7 @@ const Login = () => {
                             // Set userName from response data or cookie
                             if (userData && userData.name) {
                                 console.log("Setting userName from response:", userData.name);
+                                setUserNameInStorage(userData.name); // Save to localStorage
                                 dispatch({ type: "SET_USER_NAME", payload: userData.name });
                             } else {
                                 const userName = getUserNameFromCookie();

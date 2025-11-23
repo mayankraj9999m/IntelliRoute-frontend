@@ -7,6 +7,7 @@ import { FaMapMarkerAlt, FaBus, FaCar, FaUser, FaUserCircle } from "react-icons/
 import { MdAdminPanelSettings, MdMap, MdLogin, MdPersonAdd } from "react-icons/md";
 import Popup from "./PopUp";
 import { AutoRedirect } from "./AutoRedirect";
+import { clearUserNameFromStorage } from "../utilities/cookie.utility";
 
 const Header = () => {
     <AutoRedirect/>
@@ -119,6 +120,7 @@ const Header = () => {
                     setRedirectTo(false);
                     setIsOpen(false);
                     dispatch({ type: "REMOVE_USER" });
+                    clearUserNameFromStorage(); // Clear localStorage on logout
                 }}
                 title="ALERT"
                 redirectTo={redirectTo}

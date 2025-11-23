@@ -80,9 +80,10 @@ const UpdateProfile = () => {
             .then((data) => {
                 if (data.success) {
                     console.log("Profile Updated");
-                    // Update userName in context from cookie
+                    // Update userName in context from cookie/localStorage
                     const updatedName = getUserNameFromCookie();
                     if (updatedName) {
+                        setUserNameInStorage(updatedName); // Also save to localStorage
                         dispatch({ type: "SET_USER_NAME", payload: updatedName });
                     }
                     setPopUpContent(

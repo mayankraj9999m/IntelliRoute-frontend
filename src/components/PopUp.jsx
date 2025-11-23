@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { createPortal } from "react-dom";
 import styles from "./Popup.module.css";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../GlobalContext";
@@ -48,7 +49,7 @@ const Popup = ({
 
     if (!visible) return null;
 
-    return (
+    const popupContent = (
         <div
             className={`${styles.overlay} ${closing ? styles.fadeOut : ""}`}
             onClick={onClose}
@@ -90,6 +91,9 @@ const Popup = ({
             </div>
         </div>
     );
+
+    // Render popup using portal to ensure it's always on top
+    return createPortal(popupContent, document.body);
 };
 
 export default Popup;

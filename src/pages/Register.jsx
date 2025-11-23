@@ -15,6 +15,7 @@ const Register = () => {
         confirmPassword: "",
         role: "student",
         phone: "",
+        adminSecretKey: "",
     });
 
     const [formValidity, setFormValidity] = useState({
@@ -23,6 +24,7 @@ const Register = () => {
         password: false,
         confirmPassword: false,
         phone: false,
+        adminSecretKey: false,
     });
 
     const validators = {
@@ -47,6 +49,7 @@ const Register = () => {
             );
         },
         phone: (v) => /^\d{10}$/.test(v),
+        adminSecretKey: (v) => v.trim().length >= 8,
     };
 
     const errorMessages = {
@@ -55,6 +58,7 @@ const Register = () => {
         password: "Min 6 chars with letters, numbers and one special character",
         confirmPassword: "Passwords do not match",
         phone: "Phone must be 10 digits",
+        adminSecretKey: "Admin secret key must be at least 8 characters",
     };
 
     const handleChange = (field, value) => {
@@ -78,9 +82,28 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const allValid = Object.keys(validators).every((field) =>
+        
+        // If admin role, validate secret key
+        if (formData.role === "admin" && !validators.adminSecretKey(formData.adminSecretKey)) {
+            setPopUpContent(
+                <div>
+                    <strong className={styles.fail}>Validation Failed</strong>
+                    <p>Admin secret key is required and must be at least 8 characters.</p>
+                </div>
+            );
+            setIsOpen(true);
+            return;
+        }
+        
+        // Validate other fields (excluding adminSecretKey for students)
+        const fieldsToValidate = formData.role === "admin" 
+            ? Object.keys(validators)
+            : Object.keys(validators).filter(f => f !== "adminSecretKey");
+        
+        const allValid = fieldsToValidate.every((field) =>
             validators[field](formData[field])
         );
+        
         if (!allValid) {
             setPopUpContent(
                 <div>
@@ -91,6 +114,7 @@ const Register = () => {
             setIsOpen(true);
             return;
         }
+        
         const dataToSend = {
             name: formData.name,
             email: formData.email,
@@ -98,6 +122,11 @@ const Register = () => {
             phoneNumber: formData.phone,
             role: formData.role,
         };
+        
+        // Add admin secret key if registering as admin
+        if (formData.role === "admin") {
+            dataToSend.adminSecretKey = formData.adminSecretKey;
+        }
         fetch(import.meta.env.VITE_BACKEND_URL + "/api/users/register", {
             method: "POST",
             credentials: "include", // cookies will be sent automatically
@@ -218,6 +247,36 @@ const Register = () => {
                                 <option value="admin">Admin</option>
                             </select>
                         </div>
+
+                        {formData.role === "admin" && (
+                            <div className={styles.formField}>
+                                <label className={styles.label}>
+                                    Admin Secret Key *
+                                </label>
+                                <input
+                                    type="password"
+                                    placeholder="Enter admin secret key"
+                                    value={formData.adminSecretKey}
+                                    onChange={(e) =>
+                                        handleChange("adminSecretKey", e.target.value)
+                                    }
+                                    className={`${styles.input} ${
+                                        formData.adminSecretKey.length === 0
+                                            ? ""
+                                            : formValidity.adminSecretKey
+                                            ? styles.valid
+                                            : styles.invalid
+                                    }`}
+                                    autoComplete="off"
+                                />
+                                {formData.adminSecretKey.length > 0 &&
+                                    !formValidity.adminSecretKey && (
+                                        <span className={styles.errorMsg}>
+                                            {errorMessages.adminSecretKey}
+                                        </span>
+                                    )}
+                            </div>
+                        )}
 
                         <button type="submit" className={styles.button}>
                             Register

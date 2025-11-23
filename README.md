@@ -872,7 +872,7 @@ ISC License - free for educational use
 
 ## 👨‍💻 Author
 
-**Your Name**
+**Mayank Raj**
 
 ## 🙏 Acknowledgments
 

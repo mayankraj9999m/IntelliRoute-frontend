@@ -74,6 +74,11 @@ const Login = () => {
                 if (data.success) {
                     console.log(data);
                     setUserData(data.user);
+                    // Set localStorage immediately on successful login
+                    if (data.user && data.user.name) {
+                        setUserNameInStorage(data.user.name);
+                        console.log("Saved userName to localStorage:", data.user.name);
+                    }
                     setPopUpContent(
                         <div>
                             <strong className={styles.success}>
@@ -171,17 +176,10 @@ const Login = () => {
                             setRedirectTo(false);
                             setIsOpen(false);
                             dispatch({ type: "SET_USER", payload: userData });
-                            // Set userName from response data or cookie
-                            if (userData && userData.name) {
-                                console.log("Setting userName from response:", userData.name);
-                                setUserNameInStorage(userData.name); // Save to localStorage
-                                dispatch({ type: "SET_USER_NAME", payload: userData.name });
-                            } else {
-                                const userName = getUserNameFromCookie();
-                                if (userName) {
-                                    console.log("Setting userName from cookie:", userName);
-                                    dispatch({ type: "SET_USER_NAME", payload: userName });
-                                }
+                            // Set userName from localStorage (already saved on login)
+                            const userName = getUserNameFromCookie();
+                            if (userName) {
+                                dispatch({ type: "SET_USER_NAME", payload: userName });
                             }
                         }}
                         title="ALERT"

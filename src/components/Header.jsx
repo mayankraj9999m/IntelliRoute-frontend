@@ -26,6 +26,9 @@ const Header = () => {
             .then((data) => {
                 if (data.success) {
                     console.log(data.message);
+                    // Clear localStorage immediately on successful logout
+                    clearUserNameFromStorage();
+                    console.log("Cleared userName from localStorage");
                     setPopUpContent(
                         <div>
                             <strong className={styles.success}>
@@ -120,7 +123,7 @@ const Header = () => {
                     setRedirectTo(false);
                     setIsOpen(false);
                     dispatch({ type: "REMOVE_USER" });
-                    clearUserNameFromStorage(); // Clear localStorage on logout
+                    // localStorage already cleared on logout
                 }}
                 title="ALERT"
                 redirectTo={redirectTo}

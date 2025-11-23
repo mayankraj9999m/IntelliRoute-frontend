@@ -171,10 +171,16 @@ const Login = () => {
                             setRedirectTo(false);
                             setIsOpen(false);
                             dispatch({ type: "SET_USER", payload: userData });
-                            // Set userName from cookie
-                            const userName = getUserNameFromCookie();
-                            if (userName) {
-                                dispatch({ type: "SET_USER_NAME", payload: userName });
+                            // Set userName from response data or cookie
+                            if (userData && userData.name) {
+                                console.log("Setting userName from response:", userData.name);
+                                dispatch({ type: "SET_USER_NAME", payload: userData.name });
+                            } else {
+                                const userName = getUserNameFromCookie();
+                                if (userName) {
+                                    console.log("Setting userName from cookie:", userName);
+                                    dispatch({ type: "SET_USER_NAME", payload: userName });
+                                }
                             }
                         }}
                         title="ALERT"

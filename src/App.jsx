@@ -6,15 +6,27 @@ import { getUserNameFromCookie } from "./utilities/cookie.utility.js";
 import "./App.css";
 
 function App() {
-    const { dispatch } = useContext(GlobalContext);
+    const { state, dispatch } = useContext(GlobalContext);
 
     useEffect(() => {
         // Load userName from cookie on mount/reload
         const userName = getUserNameFromCookie();
         if (userName) {
+            console.log("App.jsx: Setting userName from cookie:", userName);
             dispatch({ type: "SET_USER_NAME", payload: userName });
         }
     }, [dispatch]);
+
+    // Also set userName when user state changes
+    useEffect(() => {
+        if (state.user && !state.userName) {
+            const userName = getUserNameFromCookie();
+            if (userName) {
+                console.log("App.jsx: User loaded, setting userName:", userName);
+                dispatch({ type: "SET_USER_NAME", payload: userName });
+            }
+        }
+    }, [state.user, state.userName, dispatch]);
 
     return (
         <>
